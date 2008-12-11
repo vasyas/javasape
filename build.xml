@@ -1,0 +1,64 @@
+<project name="javasape" default="jar">
+    <property name="version" value="0.1"/>
+
+    <path id="classpath">
+        <fileset dir="lib" includes="**/*.jar"/>
+    </path>
+	
+    <path id="classpath.test">
+    	<path refid="classpath"/>
+    	
+		<pathelement location="target/classes"/>
+		<pathelement location="target/test-classes"/>
+    </path>
+
+	<target name="compile">
+        <delete dir="target/classes"/>
+        <mkdir dir="target/classes"/>
+		
+        <delete dir="target/test-classes"/>
+        <mkdir dir="target/test-classes"/>
+
+        <javac debug="true" srcdir="src/java" destdir="target/classes" classpathref="classpath"/>
+        <javac debug="true" srcdir="src/test" destdir="target/test-classes" classpathref="classpath.test"/>
+	</target>
+	
+	<target name="test" depends="compile">
+    	<mkdir dir="target/test/cases"/>
+    	<mkdir dir="target/test/reports"/>
+    	<mkdir dir="target/test/html"/>
+    	
+		<junit fork="true" showoutput="true" 
+			printsummary="true" maxmemory="128m" 
+			errorproperty="error" failureproperty="failure">
+            <formatter type="xml"/>
+
+            <batchtest todir="target/test/cases">
+                <fileset 
+                	dir="target/test-classes" 
+                	includes="**/*Test.class"
+                />
+            </batchtest>
+        	
+            <classpath refid="classpath.test"/>
+        </junit>
+		
+		<junitreport todir="target/test/reports">
+			<fileset dir="target/test/cases">
+				<include name="TEST-*.xml"/>
+			</fileset>
+			
+			<report 
+				format="frames" 
+				todir="target/test/html"
+			/>
+		</junitreport>
+		
+		<fail if="error"/>
+		<fail if="failure"/>
+	</target>
+	
+    <target name="jar" depends="test">
+        <jar file="target/javasape-${version}.jar" basedir="target/classes"/>
+    </target>
+</project>
