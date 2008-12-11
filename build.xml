@@ -19,8 +19,8 @@
         <delete dir="target/test-classes"/>
         <mkdir dir="target/test-classes"/>
 
-        <javac debug="true" srcdir="src/java" destdir="target/classes" classpathref="classpath"/>
-        <javac debug="true" srcdir="src/test" destdir="target/test-classes" classpathref="classpath.test"/>
+        <javac debug="true" srcdir="src/java" destdir="target/classes" classpathref="classpath" target="1.5"/>
+        <javac debug="true" srcdir="src/test" destdir="target/test-classes" classpathref="classpath.test" target="1.5"/>
 	</target>
 	
 	<target name="test" depends="compile">
