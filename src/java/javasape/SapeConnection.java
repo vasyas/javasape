@@ -32,7 +32,7 @@ public class SapeConnection {
         this.cacheLifeTime = cacheLifeTime;
     }
     
-    protected String fetchRemoteFile(String host, String path) {
+    protected String fetchRemoteFile(String host, String path) throws IOException {
         HttpURLConnection connection = null;
         
         try {
@@ -62,8 +62,6 @@ public class SapeConnection {
             
             
             return sw.toString();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         } finally {
             if (connection != null)
                 connection.disconnect();
@@ -77,7 +75,13 @@ public class SapeConnection {
     public Map<String, Object> getData() {
         if (cacheLifeTime <= (System.currentTimeMillis() - cacheUpdated) / 1000) {
             for (String server : serverList) {
-                String data = fetchRemoteFile(server, dispenserPath + "&charset=UTF-8");
+                String data;
+                
+                try {
+                    data = fetchRemoteFile(server, dispenserPath + "&charset=UTF-8");
+                } catch (IOException e1) {
+                    continue;
+                }
                 
                 if (data.startsWith("FATAL ERROR:")) {
                     log.error("Sape responded with error: " + data);
