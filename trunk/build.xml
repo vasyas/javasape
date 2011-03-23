@@ -1,5 +1,5 @@
 <project name="javasape" default="jar">
-    <property name="version" value="0.2"/>
+    <property name="version" value="0.2-snapshot"/>
 
     <path id="classpath">
         <fileset dir="lib" includes="**/*.jar"/>
