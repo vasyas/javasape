@@ -33,11 +33,11 @@ public class SapeConnection {
     }
     
     protected String fetchRemoteFile(String host, String path) throws IOException {
-        HttpURLConnection connection = null;
+        Reader r = null;
         
         try {
-            connection = (HttpURLConnection) ((new URL(("http://" + host + path)).openConnection()));
-        
+            HttpURLConnection connection = (HttpURLConnection) ((new URL(("http://" + host + path)).openConnection()));
+            
             if (socketTimeout > 0) {
                 connection.setConnectTimeout(socketTimeout);
                 connection.setReadTimeout(socketTimeout);
@@ -51,7 +51,7 @@ public class SapeConnection {
             connection.setRequestMethod("GET");
             connection.connect();
             
-            Reader r = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+            r = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
             
             StringWriter sw = new StringWriter();
             
@@ -60,11 +60,10 @@ public class SapeConnection {
             while ((b = r.read()) != -1)
                 sw.write(b);
             
-            
             return sw.toString();
         } finally {
-            if (connection != null)
-                connection.disconnect();
+            if (r != null)
+                r.close();
         }
     }
     
